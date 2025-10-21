@@ -1,5 +1,5 @@
 export const Tabs = ({ tabs, activeTabId, onTabSelected }) => {
-  const activeTab = tabs.find(tab => tab.id === activeTabId);
+  let activeTab = tabs.find(tab => tab.id === activeTabId);
 
   let finalActiveTabId = activeTabId;
 
@@ -9,14 +9,10 @@ export const Tabs = ({ tabs, activeTabId, onTabSelected }) => {
     }
   };
 
-  const activeTabIndex = tabs.findIndex(tab => tab.id === activeTabId);
-  const firstTabIndex = tabs.findIndex(tab => tab.id === tabs[0].id);
-
-  if (activeTabIndex === -1) {
-    finalActiveTabId = tabs[firstTabIndex].id;
+  if (activeTab === undefined && tabs.length !== 0) {
+    finalActiveTabId = tabs[0].id;
+    activeTab = { ...tabs[0] };
   }
-
-  const displayContent = !activeTab ? tabs[0].content : activeTab.content;
 
   return (
     <div data-cy="TabsComponent">
@@ -40,7 +36,7 @@ export const Tabs = ({ tabs, activeTabId, onTabSelected }) => {
         </ul>
       </div>
       <div className="block" data-cy="TabContent">
-        {displayContent}
+        {activeTab.content}
       </div>
     </div>
   );
