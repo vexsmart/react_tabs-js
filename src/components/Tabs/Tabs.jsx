@@ -1,20 +1,22 @@
 export const Tabs = ({ tabs, activeTabId, onTabSelected }) => {
-  let activeTabContent = tabs.find(tab => tab.id === activeTabId);
+  const activeTab = tabs.find(tab => tab.id === activeTabId);
 
-  let effectiveActiveTabId = activeTabId;
-
-  if (!activeTabContent) {
-    effectiveActiveTabId = tabs[0].id;
-    activeTabContent = tabs.find(tab => tab.id === effectiveActiveTabId);
-
-    onTabSelected(effectiveActiveTabId);
-  }
+  let finalActiveTabId = activeTabId;
 
   const handleTabClick = tabId => {
     if (tabId !== activeTabId) {
       onTabSelected(tabId);
     }
   };
+
+  const activeTabIndex = tabs.findIndex(tab => tab.id === activeTabId);
+  const firstTabIndex = tabs.findIndex(tab => tab.id === tabs[0].id);
+
+  if (activeTabIndex === -1) {
+    finalActiveTabId = tabs[firstTabIndex].id;
+  }
+
+  const displayContent = !activeTab ? tabs[0].content : activeTab.content;
 
   return (
     <div data-cy="TabsComponent">
@@ -23,7 +25,7 @@ export const Tabs = ({ tabs, activeTabId, onTabSelected }) => {
           {tabs.map(tab => (
             <li
               key={tab.id}
-              className={effectiveActiveTabId === tab.id ? 'is-active' : ''}
+              className={finalActiveTabId === tab.id ? 'is-active' : ''}
               data-cy="Tab"
             >
               <a
@@ -38,7 +40,7 @@ export const Tabs = ({ tabs, activeTabId, onTabSelected }) => {
         </ul>
       </div>
       <div className="block" data-cy="TabContent">
-        {activeTabContent.content}
+        {displayContent}
       </div>
     </div>
   );
